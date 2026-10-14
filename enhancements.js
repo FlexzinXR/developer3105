@@ -17,10 +17,11 @@
     const resolved = mode === 'system' ? appearanceMode() : mode;
     const button = $('appearanceBtn');
     if (button) {
-      button.innerHTML = SVG[mode];
-      button.dataset.appearance = mode;
-      button.setAttribute('aria-label', `Apariencia: ${appearanceNames[mode]}`);
-      button.title = `Apariencia: ${appearanceNames[mode]}`;
+      button.innerHTML = SVG[resolved];
+      button.dataset.appearance = resolved;
+      const label = mode === 'system' ? `Apariencia: Sistema (${appearanceNames[resolved].toLowerCase()})` : `Apariencia: ${appearanceNames[mode]}`;
+      button.setAttribute('aria-label', label);
+      button.title = label;
     }
     document.querySelectorAll('.appearance-option-icon').forEach((node) => { node.innerHTML = SVG[node.dataset.icon]; });
     const favicon = document.querySelector('link[rel="icon"]');
@@ -62,7 +63,15 @@
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeMenu(); $('appearanceMenu')?.classList.add('hidden'); $('appearanceBtn')?.setAttribute('aria-expanded', 'false'); } });
 
   const headings = { edit: ['Editar Patch', 'Elige el patch que quieres cambiar.'], create: ['Crear Patch', 'Elige un asset y completa los datos.'], extract: ['Extraer Patch', 'Elige un archivo .3105 para guardar sus archivos en un ZIP.'] };
+  function syncBundleControls() {
+    const isCustomBundle = $('bundle')?.value === 'custom';
+    $('customBundleBox')?.classList.toggle('hidden', !isCustomBundle);
+    const automaticRoute = $('routeChoice')?.querySelector('option[value="automatic"]');
+    if (automaticRoute) automaticRoute.disabled = isCustomBundle;
+    if (isCustomBundle && $('routeChoice')) $('routeChoice').value = 'custom';
+  }
   function syncRouteControls() {
+    syncBundleControls();
     const isCreate = document.querySelector('input[name="mode"]:checked')?.value === 'create';
     const custom = $('routeChoice')?.value === 'custom';
     $('existingRoute')?.classList.toggle('hidden', isCreate);
@@ -79,6 +88,8 @@
     };
   }
   $('routeChoice')?.addEventListener('change', () => { syncRouteControls(); window.syncCombinedRoute?.(); });
+  $('bundle')?.addEventListener('change', () => { syncBundleControls(); syncRouteControls(); window.syncCombinedRoute?.(); });
+  $('customBundleInput')?.addEventListener('input', () => window.syncCombinedRoute?.());
   $('customRouteInput')?.addEventListener('input', () => { if ($('route')) $('route').value = $('customRouteInput').value; });
   document.querySelectorAll('input[name="mode"]').forEach((radio) => radio.addEventListener('change', syncRouteControls));
 
@@ -104,7 +115,7 @@
     if (view === 'lobby') renderLibrary();
   }
   document.querySelectorAll('.nav-item').forEach((button) => button.addEventListener('click', () => showView(button.dataset.view)));
-  syncRouteControls();
+  syncBundleControls(); syncRouteControls();
 
   const DB_NAME = '3105-studio-local-library', STORE = 'patches';
   function openDatabase() {

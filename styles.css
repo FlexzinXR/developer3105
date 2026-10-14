@@ -447,3 +447,123 @@ input:not([type="radio"]):focus, select:focus { border-color: var(--accent-stron
   button:not(:disabled):hover { filter: brightness(1.06); background: var(--button-hover); box-shadow: none; }
   button.secondary:not(:disabled):hover, input[type="file"]::file-selector-button:hover { background: var(--mode-selected); }
 }
+
+/* Liquid Glass selectivo: translucidez, reflejo fino y contraste adaptable. */
+.topbar-left { display: flex; align-items: center; }
+.app-topbar .appearance-control { margin-left: 2px; }
+.appearance-menu { left: auto; right: 0; }
+html, body { background-color: #eceef1 !important; }
+body {
+  background-image: radial-gradient(ellipse at 12% 0%, rgba(255,255,255,.96), transparent 36rem),
+    radial-gradient(ellipse at 92% 16%, rgba(188,198,209,.28), transparent 34rem),
+    linear-gradient(150deg, #eef0f3, #e7e9ed) !important;
+}
+body::before { display: block !important; opacity: .48; }
+.card {
+  border-color: rgba(255,255,255,.78);
+  background: rgba(255,255,255,.64);
+  box-shadow: 0 18px 54px rgba(39,47,57,.09), inset 0 1px rgba(255,255,255,.92);
+  -webkit-backdrop-filter: blur(26px) saturate(155%);
+  backdrop-filter: blur(26px) saturate(155%);
+}
+.card::before {
+  display: block !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.34), transparent 45%, rgba(255,255,255,.07));
+}
+.app-topbar .icon-button, .appearance-menu, .side-menu {
+  border-color: rgba(255,255,255,.74);
+  background: rgba(255,255,255,.68);
+  box-shadow: 0 12px 38px rgba(31,39,48,.12), inset 0 1px rgba(255,255,255,.92);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  backdrop-filter: blur(26px) saturate(165%);
+}
+.app-topbar .icon-button { background: linear-gradient(145deg, rgba(255,255,255,.8), rgba(231,234,238,.58)); }
+.appearance-menu label, .nav-item { background: rgba(255,255,255,.18); }
+.appearance-menu label:has(input:checked), .nav-item.active {
+  border-color: rgba(255,255,255,.78);
+  background: linear-gradient(145deg, rgba(255,255,255,.82), rgba(222,227,233,.48));
+  box-shadow: 0 4px 16px rgba(38,46,55,.08), inset 0 1px rgba(255,255,255,.9);
+}
+.mode label, .patch-entry, .empty-state, .count-pill, #status, #extractStatus {
+  -webkit-backdrop-filter: blur(16px) saturate(145%);
+  backdrop-filter: blur(16px) saturate(145%);
+}
+.mode label { background: rgba(255,255,255,.4); box-shadow: inset 0 1px rgba(255,255,255,.72); }
+.mode label:has(input:checked) { background: rgba(255,255,255,.76); box-shadow: 0 4px 16px rgba(38,46,55,.07), inset 0 1px #fff; }
+input:not([type="radio"]), select { background: rgba(255,255,255,.62); box-shadow: inset 0 1px rgba(255,255,255,.85); }
+input[readonly] { background: rgba(225,229,234,.6); }
+.drop { background: rgba(255,255,255,.32); }
+.menu-backdrop { background: rgba(18,22,27,.24); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+button {
+  border-color: rgba(255,255,255,.25);
+  background: linear-gradient(155deg, rgba(109,119,130,.94), rgba(70,79,89,.94));
+  box-shadow: 0 8px 22px rgba(31,39,48,.18), inset 0 1px rgba(255,255,255,.27);
+}
+button.secondary { box-shadow: 0 5px 18px rgba(31,39,48,.07), inset 0 1px rgba(255,255,255,.72); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]), :root:not([data-theme="light"]) body { background-color: #000 !important; }
+  :root:not([data-theme="light"]) body::before { opacity: .09; }
+  :root:not([data-theme="light"]) body {
+    background-image: radial-gradient(ellipse at 10% 0%, rgba(255,255,255,.08), transparent 34rem),
+      radial-gradient(ellipse at 94% 14%, rgba(200,205,212,.06), transparent 32rem),
+      linear-gradient(150deg, #101113, #000) !important;
+  }
+  :root:not([data-theme="light"]) .card,
+  :root:not([data-theme="light"]) .app-topbar .icon-button,
+  :root:not([data-theme="light"]) .appearance-menu,
+  :root:not([data-theme="light"]) .side-menu {
+    border-color: rgba(255,255,255,.16);
+    background: rgba(34,35,38,.72);
+    box-shadow: 0 18px 52px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.1);
+  }
+  :root:not([data-theme="light"]) .app-topbar .icon-button { background: linear-gradient(145deg, rgba(70,72,77,.84), rgba(34,35,38,.72)); }
+  :root:not([data-theme="light"]) .appearance-menu label,
+  :root:not([data-theme="light"]) .nav-item { background: rgba(255,255,255,.035); }
+  :root:not([data-theme="light"]) .appearance-menu label:has(input:checked),
+  :root:not([data-theme="light"]) .nav-item.active {
+    border-color: rgba(255,255,255,.18);
+    background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.055));
+    box-shadow: 0 4px 18px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.13);
+  }
+  :root:not([data-theme="light"]) .mode label,
+  :root:not([data-theme="light"]) .patch-entry,
+  :root:not([data-theme="light"]) .empty-state,
+  :root:not([data-theme="light"]) .count-pill,
+  :root:not([data-theme="light"]) #status,
+  :root:not([data-theme="light"]) #extractStatus { background-color: rgba(255,255,255,.045); }
+  :root:not([data-theme="light"]) .mode label:has(input:checked) { background: rgba(255,255,255,.12); }
+  :root:not([data-theme="light"]) input:not([type="radio"]),
+  :root:not([data-theme="light"]) select { background: rgba(255,255,255,.075); box-shadow: inset 0 1px rgba(255,255,255,.08); }
+  :root:not([data-theme="light"]) input[readonly] { background: rgba(255,255,255,.045); }
+  :root:not([data-theme="light"]) .drop { background: rgba(255,255,255,.035); }
+  :root:not([data-theme="light"]) .menu-backdrop { background: rgba(0,0,0,.48); }
+  :root:not([data-theme="light"]) button { background: linear-gradient(155deg, rgba(84,86,91,.96), rgba(47,48,52,.96)); box-shadow: 0 8px 22px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.14); }
+}
+:root[data-theme="dark"] body {
+  background-color: #000 !important;
+  background-image: radial-gradient(ellipse at 10% 0%, rgba(255,255,255,.08), transparent 34rem),
+    radial-gradient(ellipse at 94% 14%, rgba(200,205,212,.06), transparent 32rem),
+    linear-gradient(150deg, #101113, #000) !important;
+}
+:root[data-theme="dark"] body::before { opacity: .09; }
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .app-topbar .icon-button,
+:root[data-theme="dark"] .appearance-menu,
+:root[data-theme="dark"] .side-menu {
+  border-color: rgba(255,255,255,.16);
+  background: rgba(34,35,38,.72);
+  box-shadow: 0 18px 52px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.1);
+}
+:root[data-theme="dark"] .app-topbar .icon-button { background: linear-gradient(145deg, rgba(70,72,77,.84), rgba(34,35,38,.72)); }
+:root[data-theme="dark"] .appearance-menu label, :root[data-theme="dark"] .nav-item { background: rgba(255,255,255,.035); }
+:root[data-theme="dark"] .appearance-menu label:has(input:checked), :root[data-theme="dark"] .nav-item.active { border-color: rgba(255,255,255,.18); background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.055)); box-shadow: 0 4px 18px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.13); }
+:root[data-theme="dark"] .mode label, :root[data-theme="dark"] .patch-entry, :root[data-theme="dark"] .empty-state, :root[data-theme="dark"] .count-pill, :root[data-theme="dark"] #status, :root[data-theme="dark"] #extractStatus { background-color: rgba(255,255,255,.045); }
+:root[data-theme="dark"] .mode label:has(input:checked) { background: rgba(255,255,255,.12); }
+:root[data-theme="dark"] input:not([type="radio"]), :root[data-theme="dark"] select { background: rgba(255,255,255,.075); box-shadow: inset 0 1px rgba(255,255,255,.08); }
+:root[data-theme="dark"] input[readonly] { background: rgba(255,255,255,.045); }
+:root[data-theme="dark"] .drop { background: rgba(255,255,255,.035); }
+:root[data-theme="dark"] .menu-backdrop { background: rgba(0,0,0,.48); }
+:root[data-theme="dark"] button { background: linear-gradient(155deg, rgba(84,86,91,.96), rgba(47,48,52,.96)); box-shadow: 0 8px 22px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.14); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card, .app-topbar .icon-button, .appearance-menu, .side-menu { background: var(--glass-strong); }
+}

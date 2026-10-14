@@ -18,22 +18,24 @@
 </head>
 <body>
 <header class="app-topbar" aria-label="Controles de la aplicación">
-  <div class="appearance-control">
-    <button id="appearanceBtn" class="icon-button appearance-trigger" type="button" aria-label="Apariencia: Sistema" title="Cambiar apariencia" aria-haspopup="true" aria-expanded="false" aria-controls="appearanceMenu">
-      <svg id="appearanceIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.64 5.64l1.42 1.42m9.88 9.88 1.42 1.42m0-12.72-1.42 1.42m-9.88 9.88-1.42 1.42M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
-    </button>
-    <div id="appearanceMenu" class="appearance-menu hidden" role="radiogroup" aria-label="Elegir apariencia">
-      <div class="appearance-menu-title">Apariencia</div>
-      <label><input type="radio" name="appearance" value="system" checked><span class="appearance-option-icon" data-icon="system"></span><span>Sistema</span></label>
-      <label><input type="radio" name="appearance" value="light"><span class="appearance-option-icon" data-icon="light"></span><span>Claro</span></label>
-      <label><input type="radio" name="appearance" value="dark"><span class="appearance-option-icon" data-icon="dark"></span><span>Oscuro</span></label>
-    </div>
-  </div>
-  <div class="topbar-right">
-    <button id="installBtn" class="install-button hidden" type="button">Instalar app</button>
+  <div class="topbar-left">
     <button id="menuBtn" class="icon-button menu-button" type="button" aria-label="Abrir menú lateral" title="Menú" aria-expanded="false" aria-controls="sideMenu">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
     </button>
+  </div>
+  <div class="topbar-right">
+    <button id="installBtn" class="install-button hidden" type="button">Instalar app</button>
+    <div class="appearance-control">
+      <button id="appearanceBtn" class="icon-button appearance-trigger" type="button" aria-label="Apariencia: Sistema" title="Cambiar apariencia" aria-haspopup="true" aria-expanded="false" aria-controls="appearanceMenu">
+        <svg id="appearanceIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.64 5.64l1.42 1.42m9.88 9.88 1.42 1.42m0-12.72-1.42 1.42m-9.88 9.88-1.42 1.42M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+      </button>
+      <div id="appearanceMenu" class="appearance-menu hidden" role="radiogroup" aria-label="Elegir apariencia">
+        <div class="appearance-menu-title">Apariencia</div>
+        <label><input type="radio" name="appearance" value="system" checked><span class="appearance-option-icon" data-icon="system"></span><span>Sistema</span></label>
+        <label><input type="radio" name="appearance" value="light"><span class="appearance-option-icon" data-icon="light"></span><span>Claro</span></label>
+        <label><input type="radio" name="appearance" value="dark"><span class="appearance-option-icon" data-icon="dark"></span><span>Oscuro</span></label>
+      </div>
+    </div>
   </div>
 </header>
 <div id="menuBackdrop" class="menu-backdrop" hidden></div>
@@ -74,8 +76,9 @@
       <div id="patchDrop" class="drop">Elige un archivo .3105.</div>
     </div>
     <div id="createBox" class="hidden">
-      <label for="bundle">Bundle ID permitido</label>
-      <select id="bundle"><option value="com.dts.freefireth">Free Fire</option><option value="com.dts.freefiremax">Free Fire MAX</option></select>
+      <label for="bundle">Bundle ID</label>
+      <select id="bundle"><option value="com.dts.freefireth">Free Fire</option><option value="com.dts.freefiremax">Free Fire MAX</option><option value="custom">Otro (escribir Bundle ID)</option></select>
+      <div id="customBundleBox" class="hidden"><label for="customBundleInput">Bundle ID personalizado</label><input id="customBundleInput" type="text" inputmode="url" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="com.ejemplo.miapp" aria-describedby="bundleHint"><p id="bundleHint" class="hint">Usa el formato de puntos inversos, por ejemplo <code>com.empresa.juego</code>. Al elegir uno propio, indica también la ruta de destino.</p></div>
       <label for="routeChoice">Ruta destino</label>
       <select id="routeChoice"><option value="automatic">Usar una ruta sugerida</option><option value="custom">Escribir una ruta</option></select>
       <div id="customRouteBox" class="hidden"><label for="customRouteInput">Ruta relativa personalizada</label><input id="customRouteInput" type="text" autocomplete="off" spellcheck="false" placeholder="carpeta/archivo.ext"><p class="hint">Escribe una ruta relativa. No puede empezar por «/» ni contener «..».</p></div>

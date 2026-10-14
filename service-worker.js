@@ -1,4 +1,4 @@
-const CACHE = "3105-studio-v17";
+const CACHE = "3105-studio-v19";
 const ASSETS = [
   "./", "./index.html", "./styles.css", "./app.js", "./enhancements.js", "./theme-bootstrap.js",
   "./manifest.json", "./manifest-light.json", "./manifest-dark.json", "./icon.svg", "./icon-light-180.png", "./icon-dark-180.png",
