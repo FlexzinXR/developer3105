@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Crea, edita y extrae patches 3105.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: data:; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="3105 Studio">
+<script src="./theme-bootstrap.js"></script>
+<title>3105 Studio · Editor de patches</title>
+<link rel="icon" href="./icon-light-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon-light-180.png">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="app-topbar" aria-label="Controles de la aplicación">
+  <div class="appearance-control">
+    <button id="appearanceBtn" class="icon-button appearance-trigger" type="button" aria-label="Apariencia: Sistema" title="Cambiar apariencia" aria-haspopup="true" aria-expanded="false" aria-controls="appearanceMenu">
+      <svg id="appearanceIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.64 5.64l1.42 1.42m9.88 9.88 1.42 1.42m0-12.72-1.42 1.42m-9.88 9.88-1.42 1.42M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
+    </button>
+    <div id="appearanceMenu" class="appearance-menu hidden" role="radiogroup" aria-label="Elegir apariencia">
+      <div class="appearance-menu-title">Apariencia</div>
+      <label><input type="radio" name="appearance" value="system" checked><span class="appearance-option-icon" data-icon="system"></span><span>Sistema</span></label>
+      <label><input type="radio" name="appearance" value="light"><span class="appearance-option-icon" data-icon="light"></span><span>Claro</span></label>
+      <label><input type="radio" name="appearance" value="dark"><span class="appearance-option-icon" data-icon="dark"></span><span>Oscuro</span></label>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button id="installBtn" class="install-button hidden" type="button">Instalar app</button>
+    <button id="menuBtn" class="icon-button menu-button" type="button" aria-label="Abrir menú lateral" title="Menú" aria-expanded="false" aria-controls="sideMenu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+    </button>
+  </div>
+</header>
+<div id="menuBackdrop" class="menu-backdrop" hidden></div>
+<aside id="sideMenu" class="side-menu" aria-hidden="true" aria-label="Menú lateral" inert>
+  <div class="drawer-heading"><span class="drawer-mark">3105</span><span>Studio</span></div>
+  <nav aria-label="Secciones">
+    <button class="nav-item active" type="button" data-view="lobby"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4zM9 20v-6h6v6"/></svg><span>Lobby</span></button>
+    <button class="nav-item" type="button" data-view="edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16.5V20h3.5L19 8.5 15.5 5 4 16.5ZM13.8 6.7l3.5 3.5"/></svg><span>Editar Patch</span></button>
+    <button class="nav-item" type="button" data-view="create"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Crear Patch</span></button>
+    <button class="nav-item" type="button" data-view="extract"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></svg><span>Extraer Patch</span></button>
+  </nav>
+  <p class="drawer-note">Los archivos se quedan en tu dispositivo.</p>
+</aside>
+<main>
+  <section class="hero">
+    <div class="eyebrow">3105 STUDIO</div>
+    <h1>Patches 3105</h1>
+    <p>Crea, edita y extrae tus patches.</p>
+  </section>
+  <section id="lobbyView" class="card lobby-card" aria-labelledby="lobbyTitle">
+    <div class="section-heading">
+      <div><div class="eyebrow">TUS PATCHES</div><h2 id="lobbyTitle">Lobby</h2><p class="hint">Tus patches aparecen aquí para que puedas descargarlos cuando los necesites.</p></div>
+      <span id="patchCount" class="count-pill">0 patches</span>
+    </div>
+    <div id="patchList" class="patch-list" aria-live="polite"><div class="empty-state"><span class="empty-mark">3105</span><strong>Todavía no hay patches</strong><span>Cuando crees o edites uno, aparecerá aquí.</span></div></div>
+    <p class="small storage-note">El historial se guarda en este navegador. Si borras sus datos, también se borra el historial.</p>
+  </section>
+  <section id="workCard" class="card work-card hidden" aria-label="Herramientas de patches">
+    <div class="mode legacy-mode" role="radiogroup" aria-label="Modo de trabajo" aria-hidden="true">
+      <label><input type="radio" name="mode" value="edit" checked> Editar patch existente</label>
+      <label><input type="radio" name="mode" value="create"> Crear patch nuevo</label>
+      <label><input type="radio" name="mode" value="extract"> Extraer contenido</label>
+    </div>
+    <div id="workHeading" class="work-heading"><div class="eyebrow">HERRAMIENTAS</div><h2>Editar Patch</h2></div>
+    <div id="editBox">
+      <label for="patchFile">Patch .3105</label>
+      <input id="patchFile" type="file" accept=".3105">
+      <div id="patchDrop" class="drop">Elige un archivo .3105.</div>
+    </div>
+    <div id="createBox" class="hidden">
+      <label for="bundle">Bundle ID permitido</label>
+      <select id="bundle"><option value="com.dts.freefireth">Free Fire</option><option value="com.dts.freefiremax">Free Fire MAX</option></select>
+      <label for="routeChoice">Ruta destino</label>
+      <select id="routeChoice"><option value="automatic">Usar una ruta sugerida</option><option value="custom">Escribir una ruta</option></select>
+      <div id="customRouteBox" class="hidden"><label for="customRouteInput">Ruta relativa personalizada</label><input id="customRouteInput" type="text" autocomplete="off" spellcheck="false" placeholder="carpeta/archivo.ext"><p class="hint">Escribe una ruta relativa. No puede empezar por «/» ni contener «..».</p></div>
+    </div>
+    <div id="workFields">
+      <div id="targetTypeBox">
+        <label for="targetType">Tipo de asset</label>
+        <select id="targetType"><option value="avatar">Avatar</option><option value="shader">Shader</option><option value="shaders-pj">Shaders PJ</option></select>
+      </div>
+      <div class="row">
+        <div><label for="patchName">Nombre del patch</label><input id="patchName" placeholder="Aimdrag"></div>
+        <div><label for="downloadName">Nombre del archivo de salida</label><input id="downloadName" value="patch.3105"></div>
+      </div>
+      <div id="routeEditor">
+        <label id="routeLabel" for="route">Ruta relativa del archivo</label>
+        <select id="existingRoute"><option value="">Selecciona una ruta existente...</option></select>
+        <input id="route" placeholder="La ruta se determina según tipo de asset y Bundle ID" readonly>
+        <p class="hint">Al editar se conserva la ruta. Al crear, puedes usar una sugerida o escribir otra.</p>
+      </div>
+      <label for="assetFile">Archivo/asset de reemplazo <span class="small">(opcional al editar: vacío = dejar el actual)</span></label>
+      <input id="assetFile" type="file">
+      <div id="assetDrop" class="drop">Arrastra aquí el asset que quieres incluir.</div>
+      <div class="actions"><button id="loadBtn" class="secondary" type="button">Cargar datos del patch</button><button id="buildBtn" type="button">Generar y descargar patch</button></div>
+      <div id="status" role="status" aria-live="polite">Listo.</div>
+    </div>
+    <div id="extractBox" class="extract hidden">
+      <h2>Extraer contenido del patch</h2>
+      <p class="hint">Guarda en un ZIP los archivos que contiene el patch.</p>
+      <label for="extractFile">Patch que quieres extraer</label>
+      <input id="extractFile" type="file" accept=".3105">
+      <label>Protección del patch</label>
+      <div class="mode" role="radiogroup" aria-label="Protección del patch"><label><input type="radio" name="extractProtection" value="none" checked> Sin contraseña</label><label><input type="radio" name="extractProtection" value="password"> Tiene contraseña</label></div>
+      <div id="extractPasswordBox" class="hidden"><label for="extractPassword">Contraseña del patch</label><input id="extractPassword" type="password" autocomplete="off" placeholder="Escribe la contraseña"></div>
+      <div class="actions"><button id="extractBtn" type="button">Extraer contenido</button></div>
+      <div id="extractStatus" class="small" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+  <p class="small footer-note">Los archivos se procesan en tu dispositivo. Guarda otra copia si la necesitas.</p>
+</main>
+<script src="./app.js" defer></script>
+<script src="./enhancements.js" defer></script>
+</body>
+</html>
