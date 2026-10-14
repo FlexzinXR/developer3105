@@ -1,23 +1,36 @@
-# 3105 Studio — notas de esta versión
+# 3105 Studio
 
-## Uso e instalación
+Una herramienta sencilla para crear, editar y extraer archivos de patch `.3105` desde el navegador.
 
-Sirve todos los archivos del proyecto bajo el mismo origen por HTTPS (o `localhost` durante el desarrollo). El manifiesto PWA y el service worker requieren un contexto seguro para instalar y funcionar sin conexión.
+## Cómo usarla
 
-El manifiesto y el icono seleccionados antes de instalar siguen la apariencia elegida o el tema del dispositivo. Algunos sistemas operativos guardan una copia del icono al instalar; cambiar el tema después puede no cambiar el icono ya instalado.
+Abre la app y elige una sección en el menú lateral:
 
-El Lobby guarda los `.3105` generados o editados en IndexedDB de este navegador y dispositivo. Descarga también copias adicionales: borrar los datos del sitio puede borrar ese historial.
+- **Lobby** reúne los patches que has creado o editado en este navegador. Desde ahí puedes volver a descargarlos.
+- **Editar Patch** carga un archivo `.3105` existente. Si eliges un asset nuevo, se reemplaza el actual; si dejas ese campo vacío, se conserva.
+- **Crear Patch** genera un patch a partir de un asset. Free Fire y Free Fire MAX tienen rutas sugeridas. Para otra app, elige **Otro**, escribe su Bundle ID y especifica la ruta de destino.
+- **Extraer Patch** guarda en un ZIP los archivos que contiene un patch. Si está protegido, tendrás que indicar la contraseña.
+- **Info** lleva al repositorio de Dev y al canal de Flexzin Store.
 
-## Protección y privacidad
+El Bundle ID personalizado debe tener el formato habitual separado por puntos, como `com.empresa.juego`. La ruta que escribas debe ser relativa: no empieces con `/` ni incluyas `..`.
 
-La interfaz deshabilita el menú contextual, ciertos atajos comunes de inspección y zoom, y el zoom táctil; también limita los orígenes mediante una política CSP.
+## Idioma y apariencia
 
-Estas medidas son disuasivas, no hacen imposible inspeccionar, descargar o modificar una web que ejecuta código en el navegador. Para proteger secretos o lógica crítica se necesitan servicios del lado del servidor; no incluyas secretos en estos archivos.
+La interfaz está disponible en español, inglés, portugués y vietnamita. La selección de idioma se guarda en este navegador. El modo de apariencia puede seguir el ajuste del sistema o fijarse en claro u oscuro.
 
-El trabajo con patches permanece local; la aplicación no envía los archivos a un servidor.
+## Instalación y uso sin conexión
 
-## Interfaz
+La app se puede instalar desde el navegador cuando este ofrece esa opción. Para que la instalación y el uso sin conexión funcionen, sirve el proyecto bajo HTTPS (o desde `localhost` durante el desarrollo), manteniendo sus archivos en el mismo origen. La primera visita necesita conexión para descargar la app y sus recursos.
 
-La navegación lateral ofrece Lobby, Editar Patch, Crear Patch y Extraer Patch. Editar y Extraer validan la extensión `.3105`; Crear permite usar rutas predefinidas o introducir una ruta relativa, rechazando rutas absolutas y segmentos `..`.
+El sistema operativo puede guardar el icono al instalar. Por eso, cambiar de tema después no siempre cambia el icono que ya aparece en la pantalla de inicio.
 
-Se añadieron transiciones suaves de estilo nativo y se respeta la preferencia del sistema para reducir el movimiento.
+## Archivos y privacidad
+
+Los patches se procesan en el propio dispositivo; la app no los sube a un servidor. El Lobby conserva una copia local en el almacenamiento del navegador. Descarga también tus archivos importantes: borrar los datos del sitio puede borrar el historial.
+
+Las restricciones de menú contextual, atajos y zoom solo ponen obstáculos básicos; no hacen que una web sea imposible de inspeccionar o modificar. No guardes secretos ni claves privadas en estos archivos.
+
+## Enlaces
+
+- Repositorio oficial: [Dev](https://github.com/FlexzinXR/developer3105)
+- Canal oficial: [Flexzin Store](https://whatsapp.com/channel/0029Vb5tKLi9cDDSxvIJnJ3h)

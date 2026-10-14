@@ -6,7 +6,8 @@
     dark: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 8.7 8.7 0 1 0 20.2 15.4Z"/></svg>',
     system: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.4 5.1a5.8 5.8 0 0 0-6.8 7.5l-5.1 5.1a2 2 0 0 0 2.8 2.8l5.1-5.1a5.8 5.8 0 0 0 7.5-6.8l-3.4 3.4-3.5-3.5 3.4-3.4Z"/></svg>'
   };
-  const appearanceNames = { system: 'Sistema', light: 'Claro', dark: 'Oscuro' };
+  const appearanceNames = { system: 'appearance.system', light: 'appearance.light', dark: 'appearance.dark' };
+  const t = (key, vars) => window.t?.(key, vars) || key;
   const media = window.matchMedia('(prefers-color-scheme: dark)');
   const appearanceMode = () => {
     const selected = (() => { try { return localStorage.getItem('3105-appearance') || 'system'; } catch (_) { return 'system'; } })();
@@ -19,7 +20,9 @@
     if (button) {
       button.innerHTML = SVG[resolved];
       button.dataset.appearance = resolved;
-      const label = mode === 'system' ? `Apariencia: Sistema (${appearanceNames[resolved].toLowerCase()})` : `Apariencia: ${appearanceNames[mode]}`;
+      const modeName = t(appearanceNames[mode]);
+      const resolvedName = t(`appearance.${resolved}Lower`);
+      const label = mode === 'system' ? t('appearance.buttonSystem', { mode: resolvedName }) : t('appearance.buttonMode', { mode: modeName });
       button.setAttribute('aria-label', label);
       button.title = label;
     }
@@ -45,24 +48,29 @@
     let selected = 'system'; try { selected = localStorage.getItem('3105-appearance') || 'system'; } catch (_) {}
     if (selected === 'system') updateAppearanceChrome('system');
   });
+  document.addEventListener('3105:language-change', () => {
+    let selected = 'system'; try { selected = localStorage.getItem('3105-appearance') || 'system'; } catch (_) {}
+    updateAppearanceChrome(selected);
+    menuButton?.setAttribute('aria-label', menu?.classList.contains('open') ? t('menu.close') : t('menu.open'));
+  });
 
   const menu = $('sideMenu'), backdrop = $('menuBackdrop'), menuButton = $('menuBtn');
   function closeMenu() {
     menu?.classList.remove('open'); menu?.setAttribute('aria-hidden', 'true'); menu?.setAttribute('inert', '');
     if (backdrop) backdrop.hidden = true;
-    menuButton?.setAttribute('aria-expanded', 'false'); menuButton?.setAttribute('aria-label', 'Abrir menú lateral');
+    menuButton?.setAttribute('aria-expanded', 'false'); menuButton?.setAttribute('aria-label', t('menu.open'));
   }
   function openMenu() {
     menu?.classList.add('open'); menu?.setAttribute('aria-hidden', 'false'); menu?.removeAttribute('inert');
     if (backdrop) backdrop.hidden = false;
-    menuButton?.setAttribute('aria-expanded', 'true'); menuButton?.setAttribute('aria-label', 'Cerrar menú lateral');
+    menuButton?.setAttribute('aria-expanded', 'true'); menuButton?.setAttribute('aria-label', t('menu.close'));
     menu?.querySelector('.nav-item.active')?.focus({ preventScroll: true });
   }
   menuButton?.addEventListener('click', () => menu?.classList.contains('open') ? closeMenu() : openMenu());
   backdrop?.addEventListener('click', closeMenu);
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeMenu(); $('appearanceMenu')?.classList.add('hidden'); $('appearanceBtn')?.setAttribute('aria-expanded', 'false'); } });
 
-  const headings = { edit: ['Editar Patch', 'Elige el patch que quieres cambiar.'], create: ['Crear Patch', 'Elige un asset y completa los datos.'], extract: ['Extraer Patch', 'Elige un archivo .3105 para guardar sus archivos en un ZIP.'] };
+  const headings = { edit: ['nav.edit', 'view.editHint'], create: ['nav.create', 'view.createHint'], extract: ['nav.extract', 'view.extractHint'] };
   function syncBundleControls() {
     const isCustomBundle = $('bundle')?.value === 'custom';
     $('customBundleBox')?.classList.toggle('hidden', !isCustomBundle);
@@ -75,7 +83,7 @@
     const isCreate = document.querySelector('input[name="mode"]:checked')?.value === 'create';
     const custom = $('routeChoice')?.value === 'custom';
     $('existingRoute')?.classList.toggle('hidden', isCreate);
-    const label = $('routeLabel'); if (label) label.textContent = isCreate ? 'Ruta relativa del archivo destino' : 'Ruta relativa del archivo';
+    const label = $('routeLabel'); if (label) label.textContent = t(isCreate ? 'msg.routeCreate' : 'msg.routeEdit');
     $('customRouteBox')?.classList.toggle('hidden', !isCreate || !custom);
     $('route')?.classList.toggle('hidden', isCreate && custom);
     if (isCreate && custom && $('route')) $('route').value = $('customRouteInput')?.value || '';
@@ -93,22 +101,30 @@
   $('customRouteInput')?.addEventListener('input', () => { if ($('route')) $('route').value = $('customRouteInput').value; });
   document.querySelectorAll('input[name="mode"]').forEach((radio) => radio.addEventListener('change', syncRouteControls));
 
+  let currentView = 'lobby';
+  function updateWorkHeading(view) {
+    const [titleKey, subtitleKey] = headings[view] || headings.edit;
+    const title = $('workHeading')?.querySelector('h2');
+    if (title) { title.dataset.i18n = titleKey; title.textContent = t(titleKey); }
+    let subtitle = $('workHeading')?.querySelector('.view-subtitle');
+    if (!subtitle) { subtitle = document.createElement('p'); subtitle.className = 'hint view-subtitle'; $('workHeading')?.append(subtitle); }
+    subtitle.dataset.i18n = subtitleKey; subtitle.textContent = t(subtitleKey);
+  }
   function showView(view) {
-    const lobby = view === 'lobby';
+    currentView = view;
+    const lobby = view === 'lobby', info = view === 'info';
     $('lobbyView')?.classList.toggle('hidden', !lobby);
-    $('workCard')?.classList.toggle('hidden', lobby);
+    $('infoView')?.classList.toggle('hidden', !info);
+    $('workCard')?.classList.toggle('hidden', lobby || info);
     document.querySelectorAll('.nav-item').forEach((button) => {
       const active = button.dataset.view === view;
       button.classList.toggle('active', active);
       if (active) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current');
     });
-    if (!lobby) {
+    if (!lobby && !info) {
       const radio = document.querySelector(`input[name="mode"][value="${view}"]`);
       if (radio) { radio.checked = true; window.syncMode?.(); }
-      const [title, subtitle] = headings[view] || headings.edit;
-      $('workHeading').querySelector('h2').textContent = title;
-      $('workHeading').querySelector('.hint')?.remove();
-      const p = document.createElement('p'); p.className = 'hint'; p.textContent = subtitle; $('workHeading').append(p);
+      updateWorkHeading(view);
     }
     closeMenu(); syncRouteControls();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -116,6 +132,7 @@
   }
   document.querySelectorAll('.nav-item').forEach((button) => button.addEventListener('click', () => showView(button.dataset.view)));
   syncBundleControls(); syncRouteControls();
+  document.addEventListener('3105:language-change', () => { if (currentView !== 'lobby' && currentView !== 'info') { updateWorkHeading(currentView); syncRouteControls(); } renderLibrary(); });
 
   const DB_NAME = '3105-studio-local-library', STORE = 'patches';
   function openDatabase() {
@@ -133,7 +150,7 @@
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
       name: $('patchName')?.value.trim() || 'Patch 3105',
       fileName: ($('downloadName')?.value.trim() || $('patchName')?.value.trim() || 'patch') + (($('downloadName')?.value.trim() || '').toLowerCase().endsWith('.3105') ? '' : '.3105'),
-      action: document.querySelector('input[name="mode"]:checked')?.value === 'create' ? 'Creado' : 'Editado',
+      action: document.querySelector('input[name="mode"]:checked')?.value === 'create' ? 'created' : 'edited',
       savedAt: new Date().toISOString(), bytes: blob.size, blob
     };
     await new Promise((resolve, reject) => { const tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).put(record); tx.oncomplete = resolve; tx.onerror = () => reject(tx.error); });
@@ -148,26 +165,36 @@
   async function renderLibrary() {
     const list = $('patchList'); if (!list) return;
     try {
-      const records = await getPatchRecords(); $('patchCount').textContent = `${records.length} ${records.length === 1 ? 'patch' : 'patches'}`;
+      const records = await getPatchRecords();
+      $('patchCount').textContent = records.length === 0 ? t('lobby.countZero') : records.length === 1 ? t('lobby.countOne') : t('lobby.countMany', { count: records.length });
       list.replaceChildren();
       if (!records.length) {
-        const empty = document.createElement('div'); empty.className = 'empty-state'; empty.innerHTML = '<span class="empty-mark">3105</span><strong>Todavía no hay patches</strong><span>Cuando crees o edites uno, aparecerá aquí.</span>'; list.append(empty); return;
+        const empty = document.createElement('div'); empty.className = 'empty-state';
+        const mark = document.createElement('span'); mark.className = 'empty-mark'; mark.textContent = '3105';
+        const title = document.createElement('strong'); title.textContent = t('lobby.emptyTitle');
+        const note = document.createElement('span'); note.textContent = t('lobby.emptyText');
+        empty.append(mark, title, note); list.append(empty); return;
       }
       for (const record of records) {
         const card = document.createElement('article'); card.className = 'patch-entry';
         const info = document.createElement('div'); info.className = 'patch-entry-info';
         const title = document.createElement('strong'); title.textContent = record.name;
         const file = document.createElement('span'); file.className = 'patch-file'; file.textContent = record.fileName;
-        const date = document.createElement('span'); date.className = 'patch-meta'; date.textContent = `${record.action} · ${new Date(record.savedAt).toLocaleString()} · ${formatSize(record.bytes)}`;
+        const date = document.createElement('span'); date.className = 'patch-meta';
+        const action = record.action === 'created' || record.action === 'Creado' ? t('msg.created') : t('msg.edited');
+        date.textContent = `${action} · ${new Date(record.savedAt).toLocaleString(window.locale3105?.() || 'es-ES')} · ${formatSize(record.bytes)}`;
         info.append(title, file, date);
-        const download = document.createElement('button'); download.type = 'button'; download.className = 'secondary download-patch'; download.textContent = 'Descargar'; download.addEventListener('click', () => {
+        const download = document.createElement('button'); download.type = 'button'; download.className = 'secondary download-patch'; download.textContent = t('msg.download'); download.addEventListener('click', () => {
           const url = URL.createObjectURL(record.blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = record.fileName; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1500);
         });
         card.append(info, download); list.append(card);
       }
     } catch (error) {
-      $('patchCount').textContent = 'Historial local';
-      list.innerHTML = '<div class="empty-state"><strong>No se pudo abrir el historial</strong><span>Puedes seguir usando las otras herramientas.</span></div>';
+      $('patchCount').textContent = t('msg.localHistory');
+      const empty = document.createElement('div'); empty.className = 'empty-state';
+      const title = document.createElement('strong'); title.textContent = t('msg.historyUnavailableTitle');
+      const note = document.createElement('span'); note.textContent = t('msg.historyUnavailableHint');
+      empty.append(title, note); list.replaceChildren(empty);
       console.warn('No se pudo cargar el historial 3105', error);
     }
   }
@@ -214,7 +241,7 @@
       if (inputId === 'patchFile' && typeof state !== 'undefined') state.patch = null;
       const message = 'Archivo rechazado: selecciona uno cuyo nombre termine en .3105.';
       const output = $(statusId);
-      if (output) { output.textContent = message; output.classList.remove('ok'); output.classList.add('err'); }
+      if (output) { output.textContent = window.translate3105Message?.(message) || message; output.classList.remove('ok'); output.classList.add('err'); }
       if (inputId === 'patchFile') window.setStatus?.(message, 'err');
     }, true);
   }
@@ -251,7 +278,7 @@
         if (error?.name === 'AbortError') return;
         input.dataset.nativeFallback = 'true';
         const output = $(statusId);
-        if (output) output.textContent = 'No se pudo abrir el selector filtrado. Toca de nuevo y usa el filtro .3105 del selector del navegador.';
+        if (output) output.textContent = window.translate3105Message?.('No se pudo abrir el selector filtrado. Toca de nuevo y usa el filtro .3105 del selector del navegador.') || 'No se pudo abrir el selector filtrado. Toca de nuevo y usa el filtro .3105 del selector del navegador.';
       }).finally(() => { opening = false; });
     }, true);
   }
@@ -261,14 +288,14 @@
   const extractButton = $('extractBtn');
   if (extractButton) extractButton.onclick = () => {
     const file = $('extractFile')?.files?.[0];
-    if (!file) { $('extractStatus').textContent = 'Selecciona aquí un archivo que termine en .3105.'; return; }
+    if (!file) { window.set3105ExtractStatus('Selecciona aquí un archivo que termine en .3105.'); return; }
     if (!file.name.toLowerCase().endsWith('.3105')) {
       $('extractFile').value = '';
-      $('extractStatus').textContent = 'Archivo rechazado: solo se aceptan archivos .3105.';
+      window.set3105ExtractStatus('Archivo rechazado: solo se aceptan archivos .3105.');
       return;
     }
     window.extractContents(file).catch((error) => {
-      $('extractStatus').textContent = 'Error: ' + error.message;
+      window.set3105ExtractStatus('Error: ' + error.message);
       window.setStatus?.('Error: ' + error.message, 'err');
     });
   };
